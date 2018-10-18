@@ -34,7 +34,7 @@ $(function() {
         it('has URL defined and not empty', function() {
             for (let feed of allFeeds) {
                 expect(feed.url).toBeDefined();
-                expect(feed.url).not.toBe();
+                expect(feed.url.length).not.toBe(0);
             }
         });
 
@@ -45,7 +45,7 @@ $(function() {
         it('has name defined and not empty', function() {
             for (let feed of allFeeds) {
                 expect(feed.name).toBeDefined();
-                expect(feed.name).not.toBe();
+                expect(feed.name.length).not.toBe(0);
             }
         });
     });
@@ -59,7 +59,7 @@ $(function() {
          * hiding/showing of the menu element.
          */
         it('element is hidden by default', function() {
-            expect(document.getElementsByClassName('menu-hidden')).toBeDefined();
+            expect($('body').hasClass('menu-hidden')).toBe(true);
         });
 
          /* TODO: Write a test that ensures the menu changes
@@ -77,18 +77,38 @@ $(function() {
     });
 
     /* TODO: Write a new test suite named "Initial Entries" */
-
+    describe('Initial Entries', function() {
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
+        beforeEach(function(done) {
+            loadFeed(0, done);
+        });
+
+        it('contain .entry and .feed', function() {
+            expect($('.feed .entry').length).toBeGreaterThan(0);
+        });
+    });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
-
+    describe('New Feed Selection', function() {
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+        var feedData;
+        beforeEach(function(done) {
+            loadFeed(0, function() {
+                feedData = $('.feed').html();
+                loadFeed(1, done);
+            });
+        });
+        
+        it('is loaded by loadFeed function', function() {
+            expect($('.feed').html()).not.toBe(feedData);
+        });
+    });
 }());
